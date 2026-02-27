@@ -1,5 +1,5 @@
 {
-  "$schema": "https://greentic-ai.github.io/greentic-component/schemas/v1/component.manifest.schema.json",
+  "$schema": "https://greenticai.github.io/greentic-component/schemas/v1/component.manifest.schema.json",
   "id": "ai.greentic.dwbase",
   "name": "dwbase",
   "version": "0.1.1",
@@ -39,3 +39,4 @@
     "component_wasm": "blake3:0000000000000000000000000000000000000000000000000000000000000000"
   }
 }
+

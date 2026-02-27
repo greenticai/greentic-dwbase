@@ -10,9 +10,9 @@ license = "Apache-2.0"
 version = "0.1.5"
 authors = ["Greentic AI"]
 description = "DWBase: agent-first immutable atom store, components, and tools."
-homepage = "https://github.com/greentic-ai/greentic-dwbase"
-documentation = "https://github.com/greentic-ai/greentic-dwbase"
-repository = "https://github.com/greentic-ai/greentic-dwbase"
+homepage = "https://github.com/greenticai/greentic-dwbase"
+documentation = "https://github.com/greenticai/greentic-dwbase"
+repository = "https://github.com/greenticai/greentic-dwbase"
 readme = "README.md"
 keywords = ["agents", "memory", "vector", "wasm", "database"]
 categories = ["database-implementations", "wasm", "command-line-utilities"]
@@ -79,3 +79,4 @@ dwbase-wit-guest = { path = "crates/dwbase-wit-guest", version = "0.1" }
 dwbase-bench = { path = "crates/dwbase-bench", version = "0.1" }
 component-dwbase = { path = "crates/component-dwbase", version = "0.1" }
 dwbase-pack-runner = { path = "crates/dwbase-pack-runner", version = "0.1" }
+
