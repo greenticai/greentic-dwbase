@@ -3,11 +3,22 @@ name = "component-dwbase"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+build = "build.rs"
 
 description.workspace = true
 documentation.workspace = true
 homepage.workspace = true
 repository.workspace = true
+
+[package.metadata.greentic]
+abi_version = "0.6.0"
+
+[package.metadata.component]
+package = "greentic:component"
+
+[package.metadata.component.target]
+world = "greentic:component/component@0.6.0"
+
 [features]
 default = []
 component-wasm = []
@@ -16,9 +27,14 @@ component-wasm = []
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+greentic-types = "0.4"
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
-greentic-interfaces-guest = { version = "0.4.65", default-features = false, features = ["component-node"] }
+greentic-interfaces-guest = { version = "0.4", default-features = false, features = ["component-v0-6"] }
+
+[build-dependencies]
+greentic-types = "0.4"
+serde_json.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true

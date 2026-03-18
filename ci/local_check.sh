@@ -36,13 +36,12 @@ echo "==> ensure wasm32-wasip2 target"
 rustup target add wasm32-wasip2
 
 echo "==> build component (wasm32-wasip2)"
-cargo component build -p component-dwbase --release --target wasm32-wasip2 --features component-wasm
+COMPONENT_MANIFEST="$ROOT/crates/component-dwbase/component.manifest.json"
+greentic-component build --manifest "$COMPONENT_MANIFEST"
 
-COMPONENT_WASM="$ROOT/target/wasm32-wasip2/release/component_dwbase.wasm"
-COMPONENT_MANIFEST="$ROOT/target/wasm32-wasip2/release/component.manifest.json"
+COMPONENT_WASM="$ROOT/crates/component-dwbase/target/wasm32-wasip2/release/component_dwbase.wasm"
 
-echo "==> stage component manifest"
-cp "$ROOT/crates/component-dwbase/component.manifest.json" "$COMPONENT_MANIFEST"
+echo "==> hash component manifest"
 greentic-component hash --wasm "$COMPONENT_WASM" "$COMPONENT_MANIFEST"
 
 echo "==> stage component into pack"
@@ -53,7 +52,7 @@ echo "==> build gtpack with packc"
 packc build --in "$ROOT/packs/dwbase-gtpack" --gtpack-out "$ROOT/packs/dwbase-gtpack/dist/dwbase.gtpack"
 
 echo "==> greentic-component doctor"
-greentic-component doctor "$COMPONENT_MANIFEST"
+greentic-component doctor "$COMPONENT_WASM" --manifest "$COMPONENT_MANIFEST"
 
 echo "==> packc verify"
 DEV_KEY="$ROOT/packs/dwbase-gtpack/dist/dev-component.key"

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use parking_lot::Mutex;
-use rand::RngCore;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use dwbase_core::Atom;

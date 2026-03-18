@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dwbase component configuration",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

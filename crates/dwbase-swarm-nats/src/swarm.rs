@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::Context;
 use parking_lot::{Mutex, RwLock};
-use rand::RngCore;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use dwbase_engine::SummaryAdvert;

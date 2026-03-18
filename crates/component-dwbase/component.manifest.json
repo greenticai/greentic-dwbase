@@ -1,41 +1,418 @@
 {
-  "$schema": "https://greentic-ai.github.io/greentic-component/schemas/v1/component.manifest.schema.json",
-  "id": "ai.greentic.dwbase",
-  "name": "dwbase",
-  "version": "0.1.1",
-  "world": "greentic:component/node@0.5.0",
-  "describe_export": "get-manifest",
-  "config_schema": {
-    "type": "object",
-    "properties": {},
-    "required": [],
-    "additionalProperties": false
+  "$schema": "https://greenticai.github.io/greentic-component/schemas/v1/component.manifest.schema.json",
+  "artifacts": {
+    "component_wasm": "target/wasm32-wasip2/release/component_dwbase.wasm"
   },
-  "supports": ["messaging"],
-  "profiles": {
-    "default": "stateless",
-    "supported": ["stateless"]
-  },
-  "secret_requirements": [],
   "capabilities": {
+    "host": {
+      "http": {
+        "client": false,
+        "server": true
+      },
+      "secrets": {
+        "required": []
+      },
+      "telemetry": {
+        "scope": "node"
+      }
+    },
     "wasi": {
+      "clocks": false,
       "filesystem": {
         "mode": "none",
         "mounts": []
       },
-      "random": true,
-      "clocks": true
-    },
-    "host": {}
+      "random": false
+    }
   },
+  "config_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "data_dir": {
+        "description": "Filesystem path used for DWBase durable local storage.",
+        "type": "string"
+      },
+      "default_tenant": {
+        "description": "Default tenant id used when the caller does not supply one.",
+        "type": "string"
+      },
+      "nats_url": {
+        "description": "Optional NATS endpoint used for DWBase swarm replication.",
+        "type": "string"
+      },
+      "public_base_url": {
+        "description": "Public base URL injected by Greentic ingress for externally reachable DWBase APIs.",
+        "type": "string"
+      },
+      "public_path_prefix": {
+        "description": "Public path prefix mounted under public_base_url for DWBase ingress.",
+        "type": "string"
+      },
+      "swarm_enable": {
+        "description": "Enable DWBase swarm replication features.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "data_dir",
+      "default_tenant",
+      "public_base_url"
+    ],
+    "type": "object"
+  },
+  "default_operation": "dwbase.configure",
+  "describe_export": "describe",
+  "dev_flows": {
+    "custom": {
+      "format": "flow-ir-json",
+      "graph": {
+        "description": "Auto-generated custom config for ai.greentic.dwbase",
+        "id": "ai.greentic.dwbase.custom",
+        "kind": "component-config",
+        "nodes": {
+          "ask_config": {
+            "questions": {
+              "fields": [
+                {
+                  "id": "answers",
+                  "prompt": "Answers:",
+                  "type": "string"
+                },
+                {
+                  "id": "config",
+                  "prompt": "Config:",
+                  "type": "string"
+                },
+                {
+                  "id": "current_config",
+                  "prompt": "Current Config:",
+                  "type": "string"
+                },
+                {
+                  "id": "mode",
+                  "options": [
+                    "default",
+                    "setup",
+                    "install",
+                    "update",
+                    "upgrade",
+                    "remove"
+                  ],
+                  "prompt": "Mode:",
+                  "type": "enum"
+                }
+              ]
+            },
+            "routing": [
+              {
+                "to": "emit_config"
+              }
+            ]
+          },
+          "emit_config": {
+            "template": "{\n  \"node_id\": \"dwbase\",\n  \"node\": {\n    \"dwbase.configure\": {\n      \"input\": {\n        \"answers\": \"{{state.answers}}\",\n        \"config\": \"{{state.config}}\",\n        \"current_config\": \"{{state.current_config}}\",\n        \"mode\": \"{{state.mode}}\"\n      }\n    },\n    \"routing\": [\n      { \"to\": \"NEXT_NODE_PLACEHOLDER\" }\n    ]\n  }\n}"
+          }
+        }
+      }
+    },
+    "default": {
+      "format": "flow-ir-json",
+      "graph": {
+        "description": "Auto-generated default config for ai.greentic.dwbase",
+        "id": "ai.greentic.dwbase.default",
+        "kind": "component-config",
+        "nodes": {
+          "emit_config": {
+            "template": "{\n  \"node_id\": \"dwbase\",\n  \"node\": {\n    \"dwbase.configure\": {\n      \"input\": {\n      }\n    },\n    \"routing\": [\n      { \"to\": \"NEXT_NODE_PLACEHOLDER\" }\n    ]\n  }\n}"
+          }
+        }
+      }
+    }
+  },
+  "hashes": {
+    "component_wasm": "blake3:4fa6f9bdad49ea65c6005dcc04da156a7c69332dda2e616f7edf21b8ce457c2f"
+  },
+  "id": "ai.greentic.dwbase",
   "limits": {
     "memory_mb": 256,
     "wall_time_ms": 1000
   },
-  "artifacts": {
-    "component_wasm": "component_dwbase.wasm"
+  "name": "dwbase",
+  "operations": [
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "answers": {
+            "type": "object"
+          },
+          "config": {
+            "type": "object"
+          },
+          "current_config": {
+            "type": "object"
+          },
+          "mode": {
+            "enum": [
+              "default",
+              "setup",
+              "install",
+              "update",
+              "upgrade",
+              "remove"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "dwbase configure input",
+        "type": "object"
+      },
+      "name": "dwbase.configure",
+      "output_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "config": {
+            "type": "object"
+          },
+          "errors": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "requirements": {
+            "type": "object"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok",
+          "warnings",
+          "errors"
+        ],
+        "title": "dwbase configure output",
+        "type": "object"
+      }
+    },
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "title": "dwbase requirements input",
+        "type": "object"
+      },
+      "name": "dwbase.requirements",
+      "output_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "cap_id": {
+            "type": "string"
+          },
+          "provider_op": {
+            "type": "string"
+          },
+          "public_base_url_field": {
+            "type": "string"
+          },
+          "required_config_keys": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "requires_http_ingress": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cap_id",
+          "provider_op",
+          "requires_http_ingress"
+        ],
+        "title": "dwbase requirements output",
+        "type": "object"
+      }
+    },
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "input": {
+            "default": "Hello from dwbase",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "title": "dwbase echo input",
+        "type": "object"
+      },
+      "name": "dwbase.echo",
+      "output_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "dwbase echo output",
+        "type": "object"
+      }
+    },
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "enum": [
+              "default",
+              "setup",
+              "install",
+              "update",
+              "upgrade",
+              "remove"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "title": "dwbase qa-spec input",
+        "type": "object"
+      },
+      "name": "qa-spec",
+      "output_schema": {
+        "additionalProperties": true,
+        "properties": {
+          "description": {
+            "type": "object"
+          },
+          "mode": {
+            "enum": [
+              "setup",
+              "update",
+              "remove"
+            ],
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "mode",
+          "questions"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "answers": {
+            "type": "object"
+          },
+          "config": {
+            "type": "object"
+          },
+          "current_config": {
+            "type": "object"
+          },
+          "mode": {
+            "type": "string"
+          }
+        },
+        "title": "dwbase apply-answers input",
+        "type": "object"
+      },
+      "name": "apply-answers",
+      "output_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": true,
+        "properties": {
+          "config": {
+            "type": "object"
+          },
+          "errors": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok",
+          "warnings",
+          "errors"
+        ],
+        "title": "dwbase apply-answers output",
+        "type": "object"
+      }
+    },
+    {
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "title": "dwbase i18n-keys input",
+        "type": "object"
+      },
+      "name": "i18n-keys",
+      "output_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "items": {
+          "type": "string"
+        },
+        "title": "dwbase i18n-keys output",
+        "type": "array"
+      }
+    }
+  ],
+  "profiles": {
+    "default": "stateless",
+    "supported": [
+      "stateless"
+    ]
   },
-  "hashes": {
-    "component_wasm": "blake3:0000000000000000000000000000000000000000000000000000000000000000"
-  }
+  "secret_requirements": [],
+  "supports": [
+    "component_config"
+  ],
+  "version": "0.1.6",
+  "world": "greentic:component/component@0.6.0"
 }

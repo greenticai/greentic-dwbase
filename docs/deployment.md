@@ -2,6 +2,28 @@
 
 This guide covers running DWBase locally, on constrained edge devices, and as a small devnet of isolated nodes. No external orchestrators or managed services are required.
 
+For Greentic deployments, DWBase is now best thought of as a capability pack plus a stateful service. The service still runs as `dwbase-node`, but the Greentic-facing packaging in `packs/dwbase-gtpack` now advertises a DWBase capability offer and expects public ingress to provide `public_base_url` when externally reachable APIs are enabled.
+
+## Greentic Capability-Pack Deployment
+
+High-level shape:
+
+- `dwbase-node` remains the stateful process that owns sled data and HTTP APIs.
+- `component-dwbase` is the self-describing Greentic component that validates and normalizes DWBase setup.
+- `packs/dwbase-gtpack` exposes `greentic.ext.capabilities.v1` with capability `greentic.cap.dwbase.memory.v1`.
+- The pack also declares a dependency on `routing.ingress.control.chain` and requires capability `greentic.cap.ingress.control.v1`.
+
+Expected setup inputs for the pack:
+
+- `data_dir`
+- `default_tenant`
+- `public_base_url`
+- optional `public_path_prefix`
+- optional `nats_url`
+- optional `swarm_enable`
+
+For internal-only DWBase deployments, you can still run `dwbase-node` directly without Greentic ingress. For public Greentic deployments, `greentic-start` / `greentic-operator` should allocate ingress and pass `public_base_url` into the DWBase component setup flow.
+
 ## Commands (dwbase-cli)
 
 Local (single node):

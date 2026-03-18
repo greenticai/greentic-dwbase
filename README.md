@@ -1,18 +1,23 @@
 # DWBase Workspace
 
-DWBase is the first database built for digital workers and agentic agents—and the first one written almost entirely by an AI in ~24 hours of vibing code. It’s an immutable “atom” memory with reflex-style recall, built-in policy/metrics, WASI components, and swarm awareness. The Greentic-facing story is now a proper Greentic component shim + gtpack (no more “zip a wasm”); DWBase WIT stays internal while the shim implements `greentic:component/node@0.5.0`.
+DWBase is an agent-first memory store built around immutable "atoms", scoped worlds, recall-oriented queries, local durability, and Greentic capability-pack packaging. In practice, you run it as a small stateful service per environment or tenant boundary, optionally add swarm replication between nodes, and expose it either through the HTTP node API or the packaged Greentic component/gtpack.
 
 ## Why it’s different
 - Agent-first atoms: immutable, world-scoped records with labels/flags/links and recency-weighted recall.
 - Reflex pipeline: remember → embed (optional) → index → streams → swarm replication hooks.
-- Greentic-compatible: ships `component-dwbase` as a Greentic component (world `greentic:component/node@0.5.0`) packaged via `packc`; DWBase WIT remains internal.
+- Greentic-compatible: ships `component-dwbase` as a self-describing Greentic `component@0.6.0` package with QA/i18n support, plus `packs/dwbase-gtpack` as a capability-driven gtpack that can request public ingress.
 - Observe streams: backpressure-aware subscriptions with drop/backoff metrics and replay protection.
 - Storage: sled-backed append-only log with secondary indexes, repair, and retention policy hooks.
 - Vector: optional HNSW per-world ANN for reranking.
 - Security: capability-aware policies, rate limits, and replication allow/deny lists.
 - Swarm: durable peer membership, capability-aware replication filters, and replay protection.
--- Ops/UX: Prometheus-compatible metrics via `/metrics` (HTTP), CLI + HTTP node, devnet tooling, pack build for components.
-- Built by AI: ~24 hours of uninterrupted AI pairing produced the current stack.
+- Ops/UX: Prometheus-compatible metrics via `/metrics`, CLI + HTTP node, local/devnet deploy helpers, backup/restore, and gtpack packaging.
+
+## Production shape
+- Single node: the common production shape is one `dwbase-node` process with a persistent `data_dir`, fronted by normal ingress or an internal service mesh.
+- Multi-node: add NATS and swarm subscriptions only when you need selected worlds replicated between DWBase instances.
+- Integration: use the HTTP API directly for services and workers, or ship the DWBase capability pack when DWBase needs to plug into Greentic flows/operators.
+- Isolation: model tenancy through world naming and enforce access with capability/rate-limit policy.
 
 ## Install the CLI fast (cargo-binstall)
 Prebuilt binaries are published for macOS (arm64 + x86_64), Linux (x86_64-gnu), and Windows (x86_64-msvc).
@@ -56,6 +61,8 @@ dwbase list-worlds
 ```
 
 Expected ask output (pretty JSON): supporting atoms sorted by timestamp, then importance; `text` is `"answer-pending"` because the engine returns raw supporting atoms.
+
+For deployment patterns beyond a single local node, see [docs/deployment.md](docs/deployment.md).
 
 ## Concepts in action
 - **Atom shape** (immutable): 
@@ -117,7 +124,7 @@ Expected ask output (pretty JSON): supporting atoms sorted by timestamp, then im
 ## What DWBase is not
 - Not a relational or document database.
 - Not a general-purpose vector store (ANN is in-memory per world; no durability).
-- Not multi-node or replicated (single Axum node; swarm layer handles replication hooks separately).
+- Not a fully automatic distributed database; replication is selective and policy-driven, and the simplest production setup is still a single node with persistent local storage.
 
 ## Workspace layout
 - `crates/dwbase-core` — atom model.
@@ -130,12 +137,14 @@ Expected ask output (pretty JSON): supporting atoms sorted by timestamp, then im
 - `crates/dwbase-cli` — HTTP client (binary name: `dwbase`).
 - `crates/dwbase-wit-host` / `crates/dwbase-wit-guest` — WIT bindings.
 - `crates/dwbase-embedder-dummy`, `dwbase-metrics`, `dwbase-swarm` — adapters and scaffolding.
-- `crates/component-dwbase` — Greentic shim exporting `greentic:component/node@0.5.0` (DWBase APIs stay internal).
-- `packs/dwbase-gtpack` — gtpack scaffold for the Greentic component (built with `packc`; signed/verified in CI).
+- `crates/component-dwbase` — Greentic `component@0.6.0` package scaffold with self-describe, QA, ingress-aware setup, and i18n support.
+- `packs/dwbase-gtpack` — capability-driven gtpack for the Greentic component, including `greentic.ext.capabilities.v1` and ingress-control dependency metadata.
 
 ## Learn more
 - `docs/overview.md` — DWBase in one page.
 - `docs/cli.md` — CLI commands with real outputs.
+- `docs/deployment.md` — local, edge, and devnet deployment patterns.
+- `docs/component-dwbase.md` — current Greentic component model, wizard flow, and build pipeline.
 - `docs/developer/` — architecture, engine, storage, vector, security, WIT details.
 - `examples/` — runnable scenarios (`basic_memory`, `observe_stream`, `replay_simulation`, `worlds_and_forks`, `wasm-worker`).
 
@@ -147,8 +156,10 @@ cargo test
 
 # Greentic component + gtpack pipeline
 rustup target add wasm32-wasip2
-cargo component build -p component-dwbase --release --target wasm32-wasip2 --features component-wasm
-greentic-component doctor target/wasm32-wasip2/release/component.manifest.json
+greentic-component build --manifest crates/component-dwbase/component.manifest.json
+greentic-component doctor \
+  crates/component-dwbase/target/wasm32-wasip2/release/component_dwbase.wasm \
+  --manifest crates/component-dwbase/component.manifest.json
 packc build --in packs/dwbase-gtpack --gtpack-out packs/dwbase-gtpack/dist/dwbase.gtpack
 # sign/verify with your own Ed25519 keypair (packc verify requires the public key)
 packc sign --pack packs/dwbase-gtpack --manifest packs/dwbase-gtpack/dist/manifest.cbor --key <private-key>

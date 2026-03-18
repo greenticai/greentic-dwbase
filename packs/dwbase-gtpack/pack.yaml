@@ -1,27 +1,54 @@
 pack_id: dwbase-component
-version: 0.1.1
+version: 0.1.6
 kind: application
 publisher: Greentic
+name: DWBase Capability Pack
+description: "DWBase capability provider with ingress-aware configuration and optional swarm replication."
 
 components:
-  - id: "dwbase-component.component"
-    version: "0.1.1"
-    world: "greentic:component/node@0.5.0"
-    supports: ["messaging"]
+  - id: dwbase-provider
+    version: 0.1.6
+    world: greentic:component/component@0.6.0
+    supports:
+      - component-config
     profiles:
-      default: "default"
-      supported: ["default"]
+      default: stateless
+      supported:
+        - stateless
     capabilities:
       wasi: {}
       host: {}
-    wasm: "components/component_dwbase.wasm"
+    wasm: components/component_dwbase.wasm
 
-flows:
-  - id: main
-    file: flows/main.ygtc
-    tags: [default]
-    entrypoints: [default]
-
-dependencies: []
+dependencies:
+  - alias: ingress_control
+    pack_id: routing.ingress.control.chain
+    version_req: ^0.1.0
+    required_capabilities:
+      - greentic.cap.ingress.control.v1
 
 assets: []
+
+extensions:
+  greentic.ext.capabilities.v1:
+    kind: greentic.ext.capabilities.v1
+    version: 0.1.6
+    inline:
+      schema_version: 1
+      offers:
+        - offer_id: dwbase.memory.v1
+          cap_id: greentic.cap.dwbase.memory.v1
+          version: 0.1.6
+          provider:
+            component_ref: dwbase-provider
+            op: dwbase.configure
+          priority: 100
+          requires_setup: true
+          setup:
+            qa_ref: components
+          metadata:
+            backend: dwbase
+            mode: stateful-service
+            requires_http_ingress: true
+            public_base_url_field: public_base_url
+            public_path_prefix_default: /dwbase

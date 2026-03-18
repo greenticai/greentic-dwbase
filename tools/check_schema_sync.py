@@ -3,7 +3,7 @@
 
 Validates:
 - component.manifest.json parses as JSON
-- world matches greentic:component/node@0.5.0
+- world matches greentic:component/component@0.6.0
 - component artifact path is present
 """
 
@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "crates/component-dwbase/component.manifest.json"
-EXPECTED_WORLD = "greentic:component/node@0.5.0"
+EXPECTED_WORLD = "greentic:component/component@0.6.0"
 
 
 def main() -> int:

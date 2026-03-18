@@ -15,7 +15,7 @@ use bincode::config::{standard, Configuration};
 use crc32fast::Hasher as Crc32;
 use dwbase_core::{Atom, AtomId, WorldKey};
 use dwbase_engine::{AtomFilter, DwbaseError, Result, StorageEngine, StorageStats};
-use rand::Rng;
+use rand::RngExt;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use sled::IVec;
