@@ -10,7 +10,11 @@ permissions:
   packages: write
 
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   publish:
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -76,7 +80,9 @@ jobs:
 
   cli-binaries:
     name: Build CLI binaries (${{ matrix.target }})
-    needs: publish
+    needs:
+      - ci
+      - publish
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -86,6 +92,11 @@ jobs:
             target: x86_64-unknown-linux-gnu
             archive: tar.gz
             bin: dwbase
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            archive: tar.gz
+            bin: dwbase
+            linker: aarch64-linux-gnu-gcc
           - os: macos-15
             target: x86_64-apple-darwin
             archive: tar.gz
@@ -96,6 +107,10 @@ jobs:
             bin: dwbase
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+            archive: zip
+            bin: dwbase.exe
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
             archive: zip
             bin: dwbase.exe
 
@@ -110,7 +125,13 @@ jobs:
           override: true
           target: ${{ matrix.target }}
 
+      - name: Install Linux ARM64 linker
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+
       - name: Build CLI
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: ${{ matrix.linker }}
         run: cargo build --release -p dwbase-cli --target ${{ matrix.target }}
 
       - name: Package artifact (unix)

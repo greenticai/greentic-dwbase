@@ -3,7 +3,7 @@
 Targets a running `dwbase-node` (default `http://127.0.0.1:8080`). Override with `--api <url>`.
 
 ## Install
-- Prebuilt binaries: `cargo binstall dwbase-cli` (binary name: `dwbase`; macOS arm/x86, Linux x86_64-gnu, Windows x86_64-msvc).
+- Prebuilt binaries: `cargo binstall dwbase-cli` (binary name: `dwbase`; macOS arm/x86, Linux x86_64-gnu + arm64-gnu, Windows x86_64-msvc + arm64-msvc).
 - From source: `cargo build -p dwbase-cli --release` then use `target/release/dwbase`.
 
 ## list-worlds

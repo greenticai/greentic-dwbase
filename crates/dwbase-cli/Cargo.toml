@@ -22,6 +22,11 @@ target = "x86_64-pc-windows-msvc"
 pkg-url = "https://github.com/greentic-ai/greentic-dwbase/releases/download/v{ version }/dwbase-cli-{ version }-{ target }.zip"
 pkg-fmt = "zip"
 
+[[package.metadata.binstall.pkg]]
+target = "aarch64-pc-windows-msvc"
+pkg-url = "https://github.com/greentic-ai/greentic-dwbase/releases/download/v{ version }/dwbase-cli-{ version }-{ target }.zip"
+pkg-fmt = "zip"
+
 [dependencies]
 anyhow.workspace = true
 clap = { workspace = true, features = ["derive"] }

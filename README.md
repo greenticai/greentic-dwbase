@@ -20,7 +20,7 @@ DWBase is an agent-first memory store built around immutable "atoms", scoped wor
 - Isolation: model tenancy through world naming and enforce access with capability/rate-limit policy.
 
 ## Install the CLI fast (cargo-binstall)
-Prebuilt binaries are published for macOS (arm64 + x86_64), Linux (x86_64-gnu), and Windows (x86_64-msvc).
+Prebuilt binaries are published for macOS (arm64 + x86_64), Linux (x86_64-gnu + arm64-gnu), and Windows (x86_64-msvc + arm64-msvc).
 ```bash
 cargo binstall dwbase-cli
 

@@ -5,6 +5,7 @@ permissions:
 on:
   push:
   pull_request:
+  workflow_call:
 
 jobs:
   build:
@@ -40,13 +41,10 @@ jobs:
         run: rustup target add wasm32-wasip2
 
       - name: Build component (wasm32-wasip2)
-        run: cargo component build -p component-dwbase --release --target wasm32-wasip2 --features component-wasm
-
-      - name: Stage manifest + hashes
         run: |
-          COMPONENT_WASM="$GITHUB_WORKSPACE/target/wasm32-wasip2/release/component_dwbase.wasm"
-          COMPONENT_MANIFEST="$GITHUB_WORKSPACE/target/wasm32-wasip2/release/component.manifest.json"
-          cp crates/component-dwbase/component.manifest.json "$COMPONENT_MANIFEST"
+          COMPONENT_MANIFEST="$GITHUB_WORKSPACE/crates/component-dwbase/component.manifest.json"
+          greentic-component build --manifest "$COMPONENT_MANIFEST"
+          COMPONENT_WASM="$GITHUB_WORKSPACE/crates/component-dwbase/target/wasm32-wasip2/release/component_dwbase.wasm"
           greentic-component hash --wasm "$COMPONENT_WASM" "$COMPONENT_MANIFEST"
           mkdir -p packs/dwbase-gtpack/components
           cp "$COMPONENT_WASM" packs/dwbase-gtpack/components/component_dwbase.wasm
@@ -56,12 +54,7 @@ jobs:
         run: packc build --in packs/dwbase-gtpack --gtpack-out packs/dwbase-gtpack/dist/dwbase.gtpack
 
       - name: Component doctor
-        run: |
-          if [ -f target/wasm32-wasip2/release/component.manifest.json ]; then
-            greentic-component doctor target/wasm32-wasip2/release/component.manifest.json
-          else
-            echo "component wasm not found, skipping doctor"
-          fi
+        run: greentic-component doctor crates/component-dwbase/target/wasm32-wasip2/release/component_dwbase.wasm --manifest crates/component-dwbase/component.manifest.json
 
       - name: Pack verify
         run: |

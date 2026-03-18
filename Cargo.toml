@@ -7,7 +7,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Greentic AI"]
 description = "DWBase: agent-first immutable atom store, components, and tools."
 homepage = "https://github.com/greenticai/greentic-dwbase"
