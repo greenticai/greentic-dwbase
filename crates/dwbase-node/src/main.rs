@@ -731,9 +731,11 @@ embedder = "dummy"
         ));
         #[cfg(feature = "metrics")]
         let metrics_handle = init_metrics_recorder();
-        let mut health = HealthConfig::default();
         // Avoid relying on the host machine's free disk percentage for unit tests.
-        health.disk_usage_degraded = 1.0;
+        let health = HealthConfig {
+            disk_usage_degraded: 1.0,
+            ..Default::default()
+        };
         AppState {
             engine,
             worlds: Arc::new(Mutex::new(Vec::new())),
