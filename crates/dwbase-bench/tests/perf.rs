@@ -228,11 +228,8 @@ async fn observe_fanout() {
 
     let mut received = 0usize;
     for handle in subs {
-        loop {
-            match ctx.engine.stream.poll(&handle).unwrap() {
-                Some(_) => received += 1,
-                None => break,
-            }
+        while ctx.engine.stream.poll(&handle).unwrap().is_some() {
+            received += 1;
         }
     }
     let elapsed_ms = start.elapsed().as_secs_f64() * 1_000.0;

@@ -1185,6 +1185,11 @@ where
     }
 }
 
+fn parse_ts(ts: &Timestamp) -> Result<OffsetDateTime> {
+    OffsetDateTime::parse(&ts.0, &Rfc3339)
+        .map_err(|e| DwbaseError::InvalidInput(format!("invalid timestamp {}: {}", ts.0, e)))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1864,8 +1869,4 @@ mod tests {
         assert!(lag.is_some());
         assert!(lag.unwrap() > 0);
     }
-}
-fn parse_ts(ts: &Timestamp) -> Result<OffsetDateTime> {
-    OffsetDateTime::parse(&ts.0, &Rfc3339)
-        .map_err(|e| DwbaseError::InvalidInput(format!("invalid timestamp {}: {}", ts.0, e)))
 }
