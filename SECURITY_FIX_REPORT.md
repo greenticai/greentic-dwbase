@@ -1,6 +1,6 @@
 # Security Fix Report
 
-Date: 2026-03-25 (UTC)
+Date: 2026-03-26 (UTC)
 Role: CI Security Reviewer
 
 ## Inputs Reviewed
@@ -10,20 +10,18 @@ Role: CI Security Reviewer
 - New PR dependency vulnerabilities: `[]`
 
 ## PR Dependency Review
-- Inspected repository dependency manifests/lockfiles (Rust workspace):
-  - `Cargo.toml`
-  - `Cargo.lock`
-  - crate-level `Cargo.toml` files under `crates/` and `examples/`
-- Inspected latest PR commit for dependency-file changes:
-  - Commit: `cc64731`
-  - Changed file: `.github/workflows/ci.yml`
-  - Result: no dependency manifest/lockfile modifications in the latest commit
+- Dependency ecosystem detected: Rust workspace (`Cargo.toml` / `Cargo.lock` + crate-level manifests).
+- Latest commit reviewed:
+  - Commit: `49a076a8c7ca006360909c8073a5c275a1246122`
+  - Message: `chore: migrate CI to shared reusable workflow template`
+  - Changed file(s): `.github/workflows/ci.yml`
+- Result: no dependency manifest or lockfile changes in the latest commit.
 
 ## Findings
 - No Dependabot alerts were provided.
 - No code scanning alerts were provided.
 - No new PR dependency vulnerabilities were provided.
-- No newly introduced dependency vulnerabilities were identified from the PR tip review.
+- No newly introduced dependency vulnerabilities were identified from dependency-file change inspection.
 
 ## Remediation Actions
 - No code or dependency updates were required.
