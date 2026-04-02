@@ -1,8 +1,8 @@
 # Security Fix Report
 
-Date: 2026-04-01 (UTC)
+Date: 2026-04-02 (UTC)
 Repository: `/home/runner/work/greentic-dwbase/greentic-dwbase`
-Branch: `chore/add-dependency-review`
+Branch: `chore/add-concurrency-groups`
 
 ## Inputs Reviewed
 
@@ -18,7 +18,7 @@ Branch: `chore/add-dependency-review`
 
 - No Dependabot alerts were present.
 - No code scanning alerts were present.
-- No vulnerable dependency or code pattern was identified from the provided alert set.
+- No actionable vulnerabilities were identified from the provided alert set.
 
 ## Remediation Actions
 
