@@ -2,7 +2,7 @@
 
 Date: 2026-04-02 (UTC)
 Repository: `/home/runner/work/greentic-dwbase/greentic-dwbase`
-Branch: `chore/add-concurrency-groups`
+Branch: `fix/ci-concurrency-group`
 
 ## Inputs Reviewed
 
