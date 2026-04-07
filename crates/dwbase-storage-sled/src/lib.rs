@@ -8,13 +8,12 @@
 use std::{path::PathBuf, sync::Arc};
 
 use aes_gcm::{
-    aead::{Aead, KeyInit},
+    aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm, Nonce,
 };
 use crc32fast::Hasher as Crc32;
 use dwbase_core::{Atom, AtomId, WorldKey};
 use dwbase_engine::{AtomFilter, DwbaseError, Result, StorageEngine, StorageStats};
-use rand::RngExt;
 use rmp_serde::{decode, encode};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -187,9 +186,9 @@ impl SledStorage {
             .ok_or_else(|| DwbaseError::InvalidInput("key_id missing".into()))?;
         let key_bytes = self.key_provider.key_bytes(key_id)?;
         let master = Self::key_from_bytes(key_bytes)?;
+        let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
         let mut nonce_bytes = [0u8; 12];
-        let mut rng = rand::rng();
-        rng.fill(&mut nonce_bytes);
+        nonce_bytes.copy_from_slice(nonce.as_slice());
         let data_key = Self::derive_data_key(master, key_id, &nonce_bytes);
         let cipher = Aes256Gcm::new(&data_key)
             .encrypt(Nonce::from_slice(&nonce_bytes), plain)
