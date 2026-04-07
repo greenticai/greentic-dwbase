@@ -45,7 +45,7 @@ extensions:
           priority: 100
           requires_setup: true
           setup:
-            qa_ref: components
+            qa_ref: components/dwbase-provider
           metadata:
             backend: dwbase
             mode: stateful-service

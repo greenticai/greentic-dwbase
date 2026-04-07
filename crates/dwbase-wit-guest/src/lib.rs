@@ -20,13 +20,14 @@ impl Default for ClientConfig {
 
 #[cfg(test)]
 mod tests {
-    use std::path::Path;
+    use std::{fs, path::Path};
     use wit_parser::UnresolvedPackageGroup;
 
     #[test]
     fn wit_files_parse() {
-        let group =
-            UnresolvedPackageGroup::parse_path(Path::new("../../wit/dwbase-types.wit")).unwrap();
+        let path = Path::new("../../wit/dwbase-types.wit");
+        let contents = fs::read_to_string(path).unwrap();
+        let group = UnresolvedPackageGroup::parse(path, &contents).unwrap();
         let mut names = Vec::new();
         names.push(group.main.name.name.as_str());
         for pkg in &group.nested {

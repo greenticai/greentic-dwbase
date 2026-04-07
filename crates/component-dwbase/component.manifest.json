@@ -130,7 +130,7 @@
     }
   },
   "hashes": {
-    "component_wasm": "blake3:4fa6f9bdad49ea65c6005dcc04da156a7c69332dda2e616f7edf21b8ce457c2f"
+    "component_wasm": "blake3:65db153247720ee23736fe78894bfe1f5caf0318bd3ced254e357dae34d86f54"
   },
   "id": "ai.greentic.dwbase",
   "limits": {

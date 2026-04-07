@@ -8,15 +8,12 @@ description.workspace = true
 documentation.workspace = true
 homepage.workspace = true
 repository.workspace = true
-[features]
-default = ["bincode"]
-bincode = ["dep:bincode"]
 
 [dependencies]
 dwbase-core = { workspace = true }
 dwbase-engine = { workspace = true }
 sled.workspace = true
-bincode = { workspace = true, optional = true }
+rmp-serde.workspace = true
 thiserror.workspace = true
 crc32fast.workspace = true
 serde = { workspace = true, features = ["derive"] }

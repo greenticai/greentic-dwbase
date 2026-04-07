@@ -302,10 +302,7 @@ impl Replicator {
         transport.bus.subscribe(
             SUBJECT_BROADCAST,
             Box::new(move |_subject, bytes, _reply_to| {
-                let Ok((env, _)) = bincode::serde::decode_from_slice::<
-                    crate::swarm::SwarmEnvelope,
-                    _,
-                >(&bytes, bincode::config::standard()) else {
+                let Ok(env) = rmp_serde::from_slice::<crate::swarm::SwarmEnvelope>(&bytes) else {
                     return;
                 };
                 if env.from == self_id.0 {
@@ -353,8 +350,7 @@ impl Replicator {
             },
             None,
         )?;
-        let bytes = bincode::serde::encode_to_vec(&env, bincode::config::standard())
-            .map_err(Error::from)?;
+        let bytes = rmp_serde::to_vec(&env).map_err(Error::from)?;
         self.transport.bus.publish(SUBJECT_BROADCAST, None, bytes)?;
         Ok(())
     }
@@ -593,7 +589,7 @@ mod tests {
         )
         .unwrap();
         env.correlation_id = "dup-1".into();
-        let bytes = bincode::serde::encode_to_vec(&env, bincode::config::standard()).unwrap();
+        let bytes = rmp_serde::to_vec(&env).unwrap();
         bus.publish(&inbox, None, bytes.clone()).unwrap();
         bus.publish(&inbox, None, bytes).unwrap();
 
@@ -636,7 +632,7 @@ mod tests {
             )
             .unwrap();
             env.correlation_id = format!("cid-{idx}");
-            let bytes = bincode::serde::encode_to_vec(&env, bincode::config::standard()).unwrap();
+            let bytes = rmp_serde::to_vec(&env).unwrap();
             bus.publish(&inbox, None, bytes).unwrap();
         }
 

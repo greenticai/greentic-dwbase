@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Publish component-dwbase + dwbase-memory.gtpack to GHCR as OCI artifacts, and emit lockfiles.
+# Publish component-dwbase + the DWBase gtpack to GHCR as OCI artifacts, and emit lockfiles.
 #
 # Requirements:
 # - `oras` available on PATH
@@ -14,7 +14,7 @@ set -euo pipefail
 #   TAG=v0.1.0 ./tools/publish_components_oci.sh \
 #     --component-wasm target/wasm32-wasip2/release/component_dwbase.wasm \
 #     --component-manifest crates/component-dwbase/component.manifest.json \
-#     --pack packs/dwbase-memory/dist/dwbase-memory.gtpack
+#     --pack packs/dwbase-gtpack/dist/dwbase.gtpack
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -86,7 +86,7 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
   OWNER="${GITHUB_REPOSITORY_OWNER:-${GHCR_OWNER:-owner}}"
   REGISTRY="${REGISTRY:-ghcr.io}"
   COMPONENT_REPO="${COMPONENT_REPO:-$REGISTRY/$OWNER/component-dwbase}"
-  PACK_REPO="${PACK_REPO:-$REGISTRY/$OWNER/dwbase-memory}"
+  PACK_REPO="${PACK_REPO:-$REGISTRY/$OWNER/packs/dwbase/dwbase}"
   COMPONENT_REF="$COMPONENT_REPO:$TAG"
   PACK_REF="$PACK_REPO:$TAG"
   echo "==> Dry run"
@@ -117,7 +117,7 @@ REGISTRY="${REGISTRY:-ghcr.io}"
 
 # Repos (OCI namespaces) for the artifacts.
 COMPONENT_REPO="${COMPONENT_REPO:-$REGISTRY/$OWNER/component-dwbase}"
-PACK_REPO="${PACK_REPO:-$REGISTRY/$OWNER/dwbase-memory}"
+PACK_REPO="${PACK_REPO:-$REGISTRY/$OWNER/packs/dwbase/dwbase}"
 
 COMPONENT_REF="$COMPONENT_REPO:$TAG"
 PACK_REF="$PACK_REPO:$TAG"
@@ -145,7 +145,7 @@ oras push "$COMPONENT_REF" \
 echo "==> Publishing pack: $PACK_REF"
 oras push "$PACK_REF" \
   --artifact-type "application/vnd.greentic.pack.v1" \
-  --annotation "org.opencontainers.image.title=dwbase-memory" \
+  --annotation "org.opencontainers.image.title=dwbase" \
   --annotation "org.opencontainers.image.version=$TAG" \
   "$PACK_FILE:application/zip"
 
@@ -180,7 +180,7 @@ cat >"$PACK_LOCK" <<JSON
   "registry": "$REGISTRY",
   "packs": [
     {
-      "name": "dwbase-memory",
+      "name": "dwbase",
       "ref": "$PACK_REF",
       "digest": "$PACK_DIGEST",
       "artifact_type": "application/vnd.greentic.pack.v1"

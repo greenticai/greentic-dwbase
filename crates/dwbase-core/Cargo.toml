@@ -8,16 +8,11 @@ description.workspace = true
 documentation.workspace = true
 homepage.workspace = true
 repository.workspace = true
-[features]
-default = ["bincode"]
-bincode = ["dep:bincode"]
-rmp-serde = ["dep:rmp-serde"]
 
 [dependencies]
 serde.workspace = true
-bincode = { workspace = true, optional = true }
-rmp-serde = { workspace = true, optional = true }
 thiserror.workspace = true
 
 [dev-dependencies]
+rmp-serde.workspace = true
 serde_json.workspace = true
