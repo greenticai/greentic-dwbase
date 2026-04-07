@@ -11,11 +11,11 @@ use aes_gcm::{
     aead::{Aead, KeyInit},
     Aes256Gcm, Nonce,
 };
-use bincode::config::{standard, Configuration};
 use crc32fast::Hasher as Crc32;
 use dwbase_core::{Atom, AtomId, WorldKey};
 use dwbase_engine::{AtomFilter, DwbaseError, Result, StorageEngine, StorageStats};
 use rand::RngExt;
+use rmp_serde::{decode, encode};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use sled::IVec;
@@ -91,7 +91,6 @@ pub struct SledStorage {
     encryption_enabled: bool,
     key_id: Option<String>,
     key_provider: Arc<dyn KeyProvider>,
-    codec: Configuration,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -119,9 +118,9 @@ enum StorageError {
     #[error("sled error: {0}")]
     Sled(#[from] sled::Error),
     #[error("serialization error: {0}")]
-    BincodeEncode(#[from] bincode::error::EncodeError),
+    Encode(#[from] encode::Error),
     #[error("deserialization error: {0}")]
-    BincodeDecode(#[from] bincode::error::DecodeError),
+    Decode(#[from] decode::Error),
     #[error("utf8 error: {0}")]
     Utf8(#[from] std::string::FromUtf8Error),
     #[error("str utf8 error: {0}")]
@@ -148,7 +147,6 @@ impl SledStorage {
             encryption_enabled: config.encryption_enabled,
             key_id: config.key_id.clone(),
             key_provider,
-            codec: standard(),
         };
         storage.repair_logs()?;
         // Best-effort index build to avoid legacy scans.
@@ -202,16 +200,13 @@ impl SledStorage {
             cipher,
         };
         let mut out = ENC_MAGIC.to_vec();
-        let blob_bytes =
-            bincode::serde::encode_to_vec(&blob, self.codec).map_err(StorageError::from)?;
+        let blob_bytes = rmp_serde::to_vec(&blob).map_err(StorageError::from)?;
         out.extend(blob_bytes);
         Ok(out)
     }
 
     fn decrypt_bytes(&self, bytes: &[u8]) -> Result<Vec<u8>> {
-        let blob: EncryptedBlob = bincode::serde::decode_from_slice(bytes, self.codec)
-            .map(|(v, _)| v)
-            .map_err(StorageError::from)?;
+        let blob: EncryptedBlob = rmp_serde::from_slice(bytes).map_err(StorageError::from)?;
         let key_bytes = self.key_provider.key_bytes(&blob.key_id)?;
         let master = Self::key_from_bytes(key_bytes)?;
         let data_key = Self::derive_data_key(master, &blob.key_id, &blob.nonce);
@@ -255,8 +250,7 @@ impl SledStorage {
     }
 
     fn decode_frame(&self, bytes: &[u8]) -> Result<LogFrame> {
-        bincode::serde::decode_from_slice(bytes, self.codec)
-            .map(|(f, _)| f)
+        rmp_serde::from_slice(bytes)
             .map_err(StorageError::from)
             .map_err(Into::into)
     }
@@ -338,7 +332,7 @@ impl SledStorage {
     }
 
     fn encode_atom(&self, atom: &Atom) -> Result<Vec<u8>> {
-        let plain = bincode::serde::encode_to_vec(atom, self.codec).map_err(StorageError::from)?;
+        let plain = rmp_serde::to_vec(atom).map_err(StorageError::from)?;
         if self.encryption_enabled {
             self.encrypt_bytes(&plain)
         } else {
@@ -349,13 +343,11 @@ impl SledStorage {
     fn decode_atom(&self, bytes: &[u8]) -> Result<Atom> {
         if bytes.starts_with(ENC_MAGIC) {
             let decrypted = self.decrypt_bytes(&bytes[ENC_MAGIC.len()..])?;
-            return bincode::serde::decode_from_slice(&decrypted, self.codec)
-                .map(|(v, _)| v)
+            return rmp_serde::from_slice(&decrypted)
                 .map_err(StorageError::from)
                 .map_err(Into::into);
         }
-        bincode::serde::decode_from_slice(bytes, self.codec)
-            .map(|(v, _)| v)
+        rmp_serde::from_slice(bytes)
             .map_err(StorageError::from)
             .map_err(Into::into)
     }
@@ -392,8 +384,7 @@ impl SledStorage {
                 checksum: Self::checksum(&bytes),
                 len: bytes.len() as u64,
             };
-            let frame_bytes =
-                bincode::serde::encode_to_vec(&frame, self.codec).map_err(StorageError::from)?;
+            let frame_bytes = rmp_serde::to_vec(&frame).map_err(StorageError::from)?;
             self.db
                 .insert(Self::atom_key(world, &id), bytes)
                 .map_err(StorageError::from)?;
@@ -454,14 +445,13 @@ impl SledStorage {
             world: world.clone(),
             seq,
         };
-        bincode::serde::encode_to_vec(&entry, standard())
+        rmp_serde::to_vec(&entry)
             .map_err(StorageError::from)
             .map_err(Into::into)
     }
 
     fn decode_index(bytes: &[u8]) -> Result<AtomIndexEntry> {
-        bincode::serde::decode_from_slice(bytes, standard())
-            .map(|(v, _)| v)
+        rmp_serde::from_slice(bytes)
             .map_err(StorageError::from)
             .map_err(Into::into)
     }

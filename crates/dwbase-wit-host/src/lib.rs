@@ -168,7 +168,7 @@ impl TryFrom<WitNewAtom> for NewAtom {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::Path;
+    use std::{fs, path::Path};
     use wit_parser::UnresolvedPackageGroup;
 
     struct DummyEngine;
@@ -196,8 +196,9 @@ mod tests {
 
     #[test]
     fn wit_files_parse() {
-        let group =
-            UnresolvedPackageGroup::parse_path(Path::new("../../wit/dwbase-core.wit")).unwrap();
+        let path = Path::new("../../wit/dwbase-core.wit");
+        let contents = fs::read_to_string(path).unwrap();
+        let group = UnresolvedPackageGroup::parse(path, &contents).unwrap();
         assert_eq!(group.main.name.name.as_str(), "core");
     }
 

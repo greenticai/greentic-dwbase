@@ -371,19 +371,6 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "bincode")]
-    #[test]
-    fn atom_roundtrip_bincode() {
-        let atom = sample_atom();
-        let bytes =
-            bincode::serde::encode_to_vec(&atom, bincode::config::standard()).expect("serialize");
-        let decoded: Atom = bincode::serde::decode_from_slice(&bytes, bincode::config::standard())
-            .map(|(v, _)| v)
-            .expect("deserialize");
-        assert_eq!(atom, decoded);
-    }
-
-    #[cfg(feature = "rmp-serde")]
     #[test]
     fn atom_roundtrip_rmp() {
         let atom = sample_atom();

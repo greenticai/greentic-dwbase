@@ -2,7 +2,7 @@
 use std::collections::BTreeMap;
 
 #[cfg(target_arch = "wasm32")]
-use greentic_interfaces_guest::component_v0_6::node;
+use greentic_interfaces_guest::component_v0_6::{component_i18n, component_qa, node};
 #[cfg(target_arch = "wasm32")]
 use greentic_types::cbor::canonical;
 #[cfg(target_arch = "wasm32")]
@@ -161,7 +161,57 @@ impl node::Guest for Component {
 }
 
 #[cfg(target_arch = "wasm32")]
-greentic_interfaces_guest::export_component_v060!(Component);
+impl component_qa::Guest for Component {
+    fn qa_spec(mode: component_qa::QaMode) -> Vec<u8> {
+        let mode = match mode {
+            component_qa::QaMode::Default => qa::NormalizedMode::Setup,
+            component_qa::QaMode::Setup => qa::NormalizedMode::Setup,
+            component_qa::QaMode::Update => qa::NormalizedMode::Update,
+            component_qa::QaMode::Remove => qa::NormalizedMode::Remove,
+        };
+        encode_cbor(&qa::qa_spec_json(mode))
+    }
+
+    fn apply_answers(
+        mode: component_qa::QaMode,
+        current_config: Vec<u8>,
+        answers: Vec<u8>,
+    ) -> Vec<u8> {
+        let mode = match mode {
+            component_qa::QaMode::Default => qa::NormalizedMode::Setup,
+            component_qa::QaMode::Setup => qa::NormalizedMode::Setup,
+            component_qa::QaMode::Update => qa::NormalizedMode::Update,
+            component_qa::QaMode::Remove => qa::NormalizedMode::Remove,
+        };
+
+        let mut payload = parse_payload(&current_config);
+        let answer_value = parse_payload(&answers);
+        if let Some(map) = payload.as_object_mut() {
+            if let Some(answer_map) = answer_value.as_object() {
+                for (key, value) in answer_map {
+                    map.insert(key.clone(), value.clone());
+                }
+            }
+        } else {
+            payload = answer_value;
+        }
+        encode_cbor(&qa::apply_answers(mode, &payload))
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+impl component_i18n::Guest for Component {
+    fn i18n_keys() -> Vec<String> {
+        qa::i18n_keys()
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+greentic_interfaces_guest::export_component_v060!(
+    Component,
+    component_qa: Component,
+    component_i18n: Component,
+);
 
 pub fn handle_message(operation: &str, input: &str) -> String {
     format!("{COMPONENT_NAME}::{operation} => {}", input.trim())
