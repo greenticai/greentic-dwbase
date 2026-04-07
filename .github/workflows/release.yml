@@ -28,9 +28,8 @@ jobs:
       - name: Install greentic tools
         run: |
           cargo install cargo-binstall
-          cargo binstall greentic-component -y
-          cargo binstall packc -y
-          cargo binstall cargo-component -y
+          cargo binstall gtc -y
+          gtc install
 
       - name: Build component + pack
         run: |
