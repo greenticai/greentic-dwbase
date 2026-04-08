@@ -187,8 +187,7 @@ impl SledStorage {
         let key_bytes = self.key_provider.key_bytes(key_id)?;
         let master = Self::key_from_bytes(key_bytes)?;
         let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
-        let mut nonce_bytes = [0u8; 12];
-        nonce_bytes.copy_from_slice(nonce.as_slice());
+        let nonce_bytes: [u8; 12] = nonce.into();
         let data_key = Self::derive_data_key(master, key_id, &nonce_bytes);
         let cipher = Aes256Gcm::new(&data_key)
             .encrypt(Nonce::from_slice(&nonce_bytes), plain)
