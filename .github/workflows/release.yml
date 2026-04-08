@@ -25,9 +25,11 @@ jobs:
       - name: Add wasm target
         run: rustup target add wasm32-wasip2
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install greentic tools
         run: |
-          cargo install cargo-binstall
           cargo binstall gtc -y
           gtc install
 
