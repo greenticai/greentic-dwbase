@@ -33,9 +33,11 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install greentic tools
         run: |
-          cargo install cargo-binstall
           cargo binstall gtc -y
           gtc install
 
