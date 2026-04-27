@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,16 +16,42 @@ concurrency:
 
 jobs:
   # Stage 1 — tests + version stamping. Outputs the stamped dev version
-  # {M.m.GITHUB_RUN_ID} consumed by binaries + publish.
+  # consumed by binaries + publish. Form is M.m.p-dev.{RUN_ID} for
+  # dual-role repos (require-pre-release: true) so dev library publishes
+  # sort below stable on crates.io; M.m.{RUN_ID} regular release for
+  # binary-only repos (no stable namespace to protect) and pure libraries.
   dev-prepare:
     uses: greenticai/.github/.github/workflows/dev-prepare.yml@main
     with:
       exclude-crates: "component-dwbase"
 
+  dev-binaries-dwbase-cli:
+    needs: dev-prepare
+    uses: greenticai/.github/.github/workflows/dev-release-binaries.yml@main
+    with:
+      package: dwbase-cli
+      version: ${{ needs.dev-prepare.outputs.binary-version }}
+
+  dev-binaries-dwbase-node:
+    needs: dev-prepare
+    uses: greenticai/.github/.github/workflows/dev-release-binaries.yml@main
+    with:
+      package: dwbase-node
+      version: ${{ needs.dev-prepare.outputs.binary-version }}
+
+  dev-binaries-dwbase-pack-runner:
+    needs: dev-prepare
+    uses: greenticai/.github/.github/workflows/dev-release-binaries.yml@main
+    with:
+      package: dwbase-pack-runner
+      version: ${{ needs.dev-prepare.outputs.binary-version }}
+
   dev-publish:
-    needs: [dev-prepare]
+    needs: [dev-prepare, dev-binaries-dwbase-cli, dev-binaries-dwbase-node, dev-binaries-dwbase-pack-runner]
     uses: greenticai/.github/.github/workflows/dev-publish.yml@main
     with:
       version: ${{ needs.dev-prepare.outputs.version }}
       crates: "dwbase-core dwbase-metrics dwbase-engine dwbase-storage-sled dwbase-vector-hnsw dwbase-stream-local dwbase-security dwbase-embedder-dummy dwbase-swarm dwbase-swarm-nats dwbase-node dwbase-cli dwbase-pack-runner"
+      binary-version: ${{ needs.dev-prepare.outputs.binary-version }}
+      binary-crates: "dwbase-cli dwbase-node dwbase-pack-runner"
     secrets: inherit
