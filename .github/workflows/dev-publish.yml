@@ -15,9 +15,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Stage 1 — tests + version stamping. Outputs the stamped dev version
+  # {M.m.GITHUB_RUN_ID} consumed by binaries + publish.
+  dev-prepare:
+    uses: greenticai/.github/.github/workflows/dev-prepare.yml@main
+    with:
+      exclude-crates: "component-dwbase"
+
   dev-publish:
+    needs: [dev-prepare]
     uses: greenticai/.github/.github/workflows/dev-publish.yml@main
     with:
+      version: ${{ needs.dev-prepare.outputs.version }}
       crates: "dwbase-core dwbase-metrics dwbase-engine dwbase-storage-sled dwbase-vector-hnsw dwbase-stream-local dwbase-security dwbase-embedder-dummy dwbase-swarm dwbase-swarm-nats dwbase-node dwbase-cli dwbase-pack-runner"
-      exclude-crates: "component-dwbase"
     secrets: inherit
