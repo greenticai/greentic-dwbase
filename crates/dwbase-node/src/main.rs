@@ -454,10 +454,8 @@ async fn manage_world_handler(
 
     let mut worlds = state.worlds.lock().await;
     match req.action.as_str() {
-        "create" | "resume" => {
-            if !worlds.contains(&req.world) {
-                worlds.push(req.world);
-            }
+        "create" | "resume" if !worlds.contains(&req.world) => {
+            worlds.push(req.world);
         }
         "archive" => {
             worlds.retain(|w| w != &req.world);
