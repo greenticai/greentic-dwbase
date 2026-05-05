@@ -842,6 +842,8 @@ mod tests {
 
         // Corrupt the last log frame.
         storage.corrupt_log_entry(&world, 1, b"badframe");
+        // Flush before drop so sled releases the file lock synchronously.
+        storage.db.flush().unwrap();
         drop(storage);
 
         let storage2 = SledStorage::open(

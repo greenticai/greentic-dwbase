@@ -7,7 +7,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT"
-version = "0.2.0-dev.2"
+version = "1.1.0-dev.0"
 authors = [
     "Greentic AI",
 ]
@@ -107,68 +107,68 @@ default-features = false
 
 [workspace.dependencies.dwbase-core]
 path = "crates/dwbase-core"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-engine]
 path = "crates/dwbase-engine"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-metrics]
 path = "crates/dwbase-metrics"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-storage-sled]
 path = "crates/dwbase-storage-sled"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-vector-hnsw]
 path = "crates/dwbase-vector-hnsw"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-stream-local]
 path = "crates/dwbase-stream-local"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-security]
 path = "crates/dwbase-security"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-embedder-dummy]
 path = "crates/dwbase-embedder-dummy"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-swarm]
 path = "crates/dwbase-swarm"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-swarm-nats]
 path = "crates/dwbase-swarm-nats"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-cli]
 path = "crates/dwbase-cli"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-node]
 path = "crates/dwbase-node"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-wit-host]
 path = "crates/dwbase-wit-host"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-wit-guest]
 path = "crates/dwbase-wit-guest"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-bench]
 path = "crates/dwbase-bench"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.component-dwbase]
 path = "crates/component-dwbase"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
 
 [workspace.dependencies.dwbase-pack-runner]
 path = "crates/dwbase-pack-runner"
-version = "0.2.0-dev.2"
+version = ">=1.1.0-dev, <1.2.0-0"
