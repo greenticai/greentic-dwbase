@@ -366,9 +366,8 @@ impl SledStorage {
 
     /// Append a batch of atoms to the same world, returning their ids.
     pub fn append_atoms(&self, world: &WorldKey, atoms: Vec<Atom>) -> Result<Vec<AtomId>> {
-        let mut seq = self.next_seq(world)?;
         let mut ids = Vec::with_capacity(atoms.len());
-        for atom in atoms {
+        for (seq, atom) in (self.next_seq(world)?..).zip(atoms) {
             let atom_world = atom.world().clone();
             if &atom_world != world {
                 return Err(DwbaseError::InvalidInput(format!(
@@ -391,7 +390,6 @@ impl SledStorage {
                 .insert(Self::log_key(world, seq), frame_bytes)
                 .map_err(StorageError::from)?;
             self.record_index(world, &id, seq)?;
-            seq += 1;
             ids.push(id);
         }
         self.flush_if_needed()?;
