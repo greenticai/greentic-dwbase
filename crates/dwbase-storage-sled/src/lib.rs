@@ -8,8 +8,8 @@
 use std::{path::PathBuf, sync::Arc};
 
 use aes_gcm::{
-    aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm, Nonce,
+    aead::{Aead, AeadCore, KeyInit, OsRng},
 };
 use crc32fast::Hasher as Crc32;
 use dwbase_core::{Atom, AtomId, WorldKey};
@@ -782,11 +782,13 @@ mod tests {
             .unwrap();
 
         storage.clear_index().unwrap();
-        assert!(storage
-            .db
-            .get(SledStorage::atom_index_key(&AtomId::new("a1")))
-            .unwrap()
-            .is_none());
+        assert!(
+            storage
+                .db
+                .get(SledStorage::atom_index_key(&AtomId::new("a1")))
+                .unwrap()
+                .is_none()
+        );
 
         let rebuilt = storage.rebuild_index().unwrap();
         assert_eq!(rebuilt, 2);
@@ -817,11 +819,13 @@ mod tests {
 
         let removed = storage.delete_atoms(&world, &[AtomId::new("a1")]).unwrap();
         assert_eq!(removed, 1);
-        assert!(storage
-            .db
-            .get(SledStorage::atom_index_key(&AtomId::new("a1")))
-            .unwrap()
-            .is_none());
+        assert!(
+            storage
+                .db
+                .get(SledStorage::atom_index_key(&AtomId::new("a1")))
+                .unwrap()
+                .is_none()
+        );
         let atoms = storage.get_by_ids(&[AtomId::new("a1")]).unwrap();
         assert!(atoms.is_empty());
     }
@@ -842,6 +846,8 @@ mod tests {
 
         // Corrupt the last log frame.
         storage.corrupt_log_entry(&world, 1, b"badframe");
+        // Flush before drop so sled releases the file lock synchronously.
+        storage.db.flush().unwrap();
         drop(storage);
 
         let storage2 = SledStorage::open(
