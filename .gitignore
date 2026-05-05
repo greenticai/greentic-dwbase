@@ -7,11 +7,11 @@ dist/
 # Editor and OS metadata
 .DS_Store
 .idea/
-.vscode/
 
 # Logs
 *.log
 
+temp_auto_push.bat
 # CI workflow artifacts (codex-security-fix, dependency-review, codex-semver-fix)
 all-dependabot-alerts.json
 all-code-scanning-alerts.json
@@ -25,3 +25,5 @@ SECURITY_FIX_REPORT.md
 DEPENDENCY_FIX_REPORT.md
 semver-output.txt
 SEMVER_FIX_REPORT.md
+.gitignore
+branch_structure.json
