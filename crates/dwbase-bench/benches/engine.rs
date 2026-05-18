@@ -118,9 +118,9 @@ fn bench_remember(c: &mut Criterion) {
             &batch,
             |b, &size| {
                 b.to_async(&rt).iter(|| async {
-                    for i in 0..size {
+                    for _i in 0..size {
                         let mut atom = sample_new_atom(&world);
-                        atom.payload_json = format!(r#"{{"text":"hello-{i}"}}"#);
+                        atom.payload_json = format!(r#"{{"text":"hello-{_i}"}}"#);
                         let _ = ctx.engine.remember(atom).await.unwrap();
                     }
                 })
