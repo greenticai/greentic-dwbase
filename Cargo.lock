@@ -346,15 +346,6 @@ dependencies = [
 
 [[package]]
 name = "block-buffer"
-version = "0.10.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71"
-dependencies = [
- "generic-array",
-]
-
-[[package]]
-name = "block-buffer"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdd35008169921d80bc60d3d0ab416eecb028c4cd653352907921d95084790be"
@@ -553,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "component-dwbase"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "greentic-interfaces-guest",
  "greentic-types",
@@ -790,21 +781,11 @@ dependencies = [
 
 [[package]]
 name = "digest"
-version = "0.10.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ed9a281f7bc9b7576e61468ba615a66a5c8cfdff42420a70aa82701a3b1e292"
-dependencies = [
- "block-buffer 0.10.4",
- "crypto-common 0.1.7",
-]
-
-[[package]]
-name = "digest"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4850db49bf08e663084f7fb5c87d202ef91a3907271aff24a94eb97ff039153c"
 dependencies = [
- "block-buffer 0.12.0",
+ "block-buffer",
  "const-oid",
  "crypto-common 0.2.1",
 ]
@@ -840,7 +821,7 @@ checksum = "92773504d58c093f6de2459af4af33faa518c13451eb8f2b5698ed3d36e7c813"
 
 [[package]]
 name = "dwbase-bench"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "anyhow",
  "criterion",
@@ -856,7 +837,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-cli"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -885,7 +866,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-core"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "rmp-serde",
  "serde",
@@ -895,7 +876,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-embedder-dummy"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-engine",
  "tokio",
@@ -903,7 +884,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-engine"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-core",
  "dwbase-metrics",
@@ -917,7 +898,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-metrics"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "metrics",
  "tracing",
@@ -925,7 +906,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-node"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -953,7 +934,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-pack-runner"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "serde_json",
  "tempfile",
@@ -961,7 +942,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-security"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-core",
  "dwbase-engine",
@@ -971,7 +952,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-storage-sled"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "aes-gcm",
  "crc32fast",
@@ -981,7 +962,7 @@ dependencies = [
  "rand 0.10.0",
  "rmp-serde",
  "serde",
- "sha2 0.11.0",
+ "sha2",
  "sled",
  "tempfile",
  "thiserror 2.0.18",
@@ -990,7 +971,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-stream-local"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-core",
  "dwbase-engine",
@@ -998,7 +979,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-swarm"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "async-trait",
  "dwbase-core",
@@ -1013,7 +994,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-swarm-nats"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "anyhow",
  "async-nats",
@@ -1035,7 +1016,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-vector-hnsw"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-core",
  "dwbase-engine",
@@ -1048,7 +1029,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-wit-guest"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1057,7 +1038,7 @@ dependencies = [
 
 [[package]]
 name = "dwbase-wit-host"
-version = "0.1.8"
+version = "1.1.0-dev.0"
 dependencies = [
  "dwbase-core",
  "dwbase-engine",
@@ -1359,26 +1340,27 @@ dependencies = [
 
 [[package]]
 name = "greentic-interfaces-guest"
-version = "0.4.112"
+version = "1.1.0-dev.27127755811"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92b4cd55f864894d3296bbcec920a13e20bd875cff2347bf6197a0e8d93d0988"
+checksum = "16575e48e4562c7e9b58a492450247e773bf0b6bee7614eb4537a52a30f292d2"
 dependencies = [
  "greentic-types",
- "wit-bindgen 0.54.0",
- "wit-bindgen-core 0.54.0",
- "wit-bindgen-rust 0.54.0",
+ "wit-bindgen 0.57.1",
+ "wit-bindgen-core 0.57.1",
+ "wit-bindgen-rust 0.57.1",
 ]
 
 [[package]]
 name = "greentic-types"
-version = "0.4.58"
+version = "1.1.0-dev.27836473437"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eee55ef0e8a21fb642a6a2aed9d86dfc4b5ca745328da2093ec617ff274df7ad"
+checksum = "a8c40256c6908985ab2bfc60026cab7a3971bbbb5f18d7303f2fffb070f14f39"
 dependencies = [
  "anyhow",
  "blake3",
  "chrono",
  "ciborium",
+ "constant_time_eq",
  "fnv",
  "indexmap",
  "semver",
@@ -1386,7 +1368,7 @@ dependencies = [
  "serde_bytes",
  "serde_json",
  "serde_with",
- "sha2 0.10.9",
+ "sha2",
  "thiserror 2.0.18",
  "time",
  "unic-langid",
@@ -1438,6 +1420,15 @@ name = "hashbrown"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
+dependencies = [
+ "foldhash 0.2.0",
+]
+
+[[package]]
+name = "hashbrown"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f467dd6dccf739c208452f8014c75c18bb8301b050ad1cfb27153803edb0f51"
 dependencies = [
  "foldhash 0.2.0",
 ]
@@ -1726,12 +1717,12 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.13.1"
+version = "2.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45a8a2b9cb3e0b0c1803dbb0758ffac5de2f425b23c28f518faabd9d805342ff"
+checksum = "d466e9454f08e4a911e14806c24e16fba1b4c121d1ea474396f396069cf949d9"
 dependencies = [
  "equivalent",
- "hashbrown 0.16.1",
+ "hashbrown 0.17.0",
  "serde",
  "serde_core",
 ]
@@ -2974,24 +2965,13 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.10.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7507d819769d01a365ab707794a4084392c824f54a7a6a7862f8c3d0892b283"
-dependencies = [
- "cfg-if",
- "cpufeatures 0.2.17",
- "digest 0.10.7",
-]
-
-[[package]]
-name = "sha2"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "446ba717509524cb3f22f17ecc096f10f4822d76ab5c0b9822c5f9c284e825f4"
 dependencies = [
  "cfg-if",
  "cpufeatures 0.3.0",
- "digest 0.11.2",
+ "digest",
 ]
 
 [[package]]
@@ -3722,12 +3702,12 @@ dependencies = [
 
 [[package]]
 name = "wasm-encoder"
-version = "0.245.1"
+version = "0.247.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f9dca005e69bf015e45577e415b9af8c67e8ee3c0e38b5b0add5aa92581ed5c"
+checksum = "30b6733b8b91d010a6ac5b0fb237dc46a19650bc4c67db66857e2e787d437204"
 dependencies = [
  "leb128fmt",
- "wasmparser 0.245.1",
+ "wasmparser 0.247.0",
 ]
 
 [[package]]
@@ -3744,14 +3724,14 @@ dependencies = [
 
 [[package]]
 name = "wasm-metadata"
-version = "0.245.1"
+version = "0.247.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da55e60097e8b37b475a0fa35c3420dd71d9eb7bd66109978ab55faf56a57efb"
+checksum = "665fe59e56cc9b419ca6fcca56673e3421d1a5011e3b65caf6b726fd9e041d10"
 dependencies = [
  "anyhow",
  "indexmap",
- "wasm-encoder 0.245.1",
- "wasmparser 0.245.1",
+ "wasm-encoder 0.247.0",
+ "wasmparser 0.247.0",
 ]
 
 [[package]]
@@ -3768,23 +3748,23 @@ dependencies = [
 
 [[package]]
 name = "wasmparser"
-version = "0.245.1"
+version = "0.246.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f08c9adee0428b7bddf3890fc27e015ac4b761cc608c822667102b8bfd6995e"
+checksum = "71cde4757396defafd25417cfb36aa3161027d06d865b0c24baaae229aac005d"
 dependencies = [
  "bitflags 2.11.0",
- "hashbrown 0.16.1",
  "indexmap",
  "semver",
 ]
 
 [[package]]
 name = "wasmparser"
-version = "0.246.2"
+version = "0.247.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "71cde4757396defafd25417cfb36aa3161027d06d865b0c24baaae229aac005d"
+checksum = "8e6fb4c2bee46c5ea4d40f8cdb5c131725cd976718ec56f1c8e82fbde5fa2a80"
 dependencies = [
  "bitflags 2.11.0",
+ "hashbrown 0.17.0",
  "indexmap",
  "semver",
 ]
@@ -4213,11 +4193,11 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen"
-version = "0.54.0"
+version = "0.57.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bb00254d5051d69730ee32580b7373592f10ad786757c372f0f2c7b61f86a2c"
+checksum = "1ebf944e87a7c253233ad6766e082e3cd714b5d03812acc24c318f549614536e"
 dependencies = [
- "wit-bindgen-rust-macro 0.54.0",
+ "wit-bindgen-rust-macro 0.57.1",
 ]
 
 [[package]]
@@ -4233,13 +4213,13 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-core"
-version = "0.54.0"
+version = "0.57.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99cdef5ccf0b0e9bf30868d6f9c5ed116c84ae95f84ba29d2216d3e922de3963"
+checksum = "02dee27a2dc20d1008016c742ec9fc6ea498492994ba3750be7454cbc97ff04c"
 dependencies = [
  "anyhow",
  "heck",
- "wit-parser 0.245.1",
+ "wit-parser 0.247.0",
 ]
 
 [[package]]
@@ -4260,18 +4240,18 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-rust"
-version = "0.54.0"
+version = "0.57.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e76541e2f37ac1729db85765729daa0f3c2b5975d66699114d107525f6d6c8d5"
+checksum = "b5007dae772945b7a5003d69d90a3a4a78929d41f19d004e980c4259a6af4484"
 dependencies = [
  "anyhow",
  "heck",
  "indexmap",
  "prettyplease",
  "syn",
- "wasm-metadata 0.245.1",
- "wit-bindgen-core 0.54.0",
- "wit-component 0.245.1",
+ "wasm-metadata 0.247.0",
+ "wit-bindgen-core 0.57.1",
+ "wit-component 0.247.0",
 ]
 
 [[package]]
@@ -4291,17 +4271,17 @@ dependencies = [
 
 [[package]]
 name = "wit-bindgen-rust-macro"
-version = "0.54.0"
+version = "0.57.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a284e17b2bc808c72ba008f6694626fa76bcac608b3d1ed0880f9add3f558f8e"
+checksum = "af9237d678e3513ad24e96fe98beacdc0db6405284ba2a2400418cf0d42caa89"
 dependencies = [
  "anyhow",
  "prettyplease",
  "proc-macro2",
  "quote",
  "syn",
- "wit-bindgen-core 0.54.0",
- "wit-bindgen-rust 0.54.0",
+ "wit-bindgen-core 0.57.1",
+ "wit-bindgen-rust 0.57.1",
 ]
 
 [[package]]
@@ -4325,9 +4305,9 @@ dependencies = [
 
 [[package]]
 name = "wit-component"
-version = "0.245.1"
+version = "0.247.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4894f10d2d5cbc17c77e91f86a1e48e191a788da4425293b55c98b44ba3fcac9"
+checksum = "9d567162a6b9843080e5e0053f696623ff694bae8ae017c9ec536d1873bbe3d8"
 dependencies = [
  "anyhow",
  "bitflags 2.11.0",
@@ -4336,10 +4316,10 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "wasm-encoder 0.245.1",
- "wasm-metadata 0.245.1",
- "wasmparser 0.245.1",
- "wit-parser 0.245.1",
+ "wasm-encoder 0.247.0",
+ "wasm-metadata 0.247.0",
+ "wasmparser 0.247.0",
+ "wit-parser 0.247.0",
 ]
 
 [[package]]
@@ -4362,25 +4342,6 @@ dependencies = [
 
 [[package]]
 name = "wit-parser"
-version = "0.245.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "330698718e82983499419494dd1e3d7811a457a9bf9f69734e8c5f07a2547929"
-dependencies = [
- "anyhow",
- "hashbrown 0.16.1",
- "id-arena",
- "indexmap",
- "log",
- "semver",
- "serde",
- "serde_derive",
- "serde_json",
- "unicode-xid",
- "wasmparser 0.245.1",
-]
-
-[[package]]
-name = "wit-parser"
 version = "0.246.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd979042b5ff288607ccf3b314145435453f20fc67173195f91062d2289b204d"
@@ -4396,6 +4357,25 @@ dependencies = [
  "serde_json",
  "unicode-xid",
  "wasmparser 0.246.2",
+]
+
+[[package]]
+name = "wit-parser"
+version = "0.247.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ffe4064318cdf3c08cb99343b44c039fcefe61ccdf58aa9975285f13d74d1fc"
+dependencies = [
+ "anyhow",
+ "hashbrown 0.17.0",
+ "id-arena",
+ "indexmap",
+ "log",
+ "semver",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "unicode-xid",
+ "wasmparser 0.247.0",
 ]
 
 [[package]]

@@ -1,16 +1,40 @@
 [package]
 name = "observe_stream"
-version = "0.1.0"
+version = "1.1.0"
 edition = "2021"
 
 [dependencies]
 anyhow = "1.0.89"
-dwbase-core = { path = "../../crates/dwbase-core" }
-dwbase-engine = { path = "../../crates/dwbase-engine", features = ["tokio"] }
-dwbase-security = { path = "../../crates/dwbase-security" }
-dwbase-storage-sled = { path = "../../crates/dwbase-storage-sled" }
-dwbase-stream-local = { path = "../../crates/dwbase-stream-local" }
-dwbase-vector-hnsw = { path = "../../crates/dwbase-vector-hnsw" }
-dwbase-embedder-dummy = { path = "../../crates/dwbase-embedder-dummy" }
 tempfile = "3.13.0"
-tokio = { version = "1.48.0", features = ["macros", "rt-multi-thread", "time"] }
+
+[dependencies.dwbase-core]
+path = "../../crates/dwbase-core"
+
+[dependencies.dwbase-engine]
+path = "../../crates/dwbase-engine"
+features = [
+    "tokio",
+]
+
+[dependencies.dwbase-security]
+path = "../../crates/dwbase-security"
+
+[dependencies.dwbase-storage-sled]
+path = "../../crates/dwbase-storage-sled"
+
+[dependencies.dwbase-stream-local]
+path = "../../crates/dwbase-stream-local"
+
+[dependencies.dwbase-vector-hnsw]
+path = "../../crates/dwbase-vector-hnsw"
+
+[dependencies.dwbase-embedder-dummy]
+path = "../../crates/dwbase-embedder-dummy"
+
+[dependencies.tokio]
+version = "1.48.0"
+features = [
+    "macros",
+    "rt-multi-thread",
+    "time",
+]

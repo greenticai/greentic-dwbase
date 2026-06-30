@@ -1,15 +1,17 @@
+example = [
+    { name = "memory_demo" },
+]
+
 [package]
 name = "component-dwbase"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
 build = "build.rs"
-
 description.workspace = true
 documentation.workspace = true
 homepage.workspace = true
 repository.workspace = true
-
 [package.metadata.greentic]
 abi_version = "0.6.0"
 
@@ -24,19 +26,35 @@ default = []
 component-wasm = []
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = [
+    "cdylib",
+    "rlib",
+]
 
 [dependencies]
-greentic-types = "0.4"
-serde = { workspace = true, features = ["derive"] }
-serde_json.workspace = true
-greentic-interfaces-guest = { version = "0.4", default-features = false, features = ["component-v0-6"] }
+greentic-types = ">=1.1.0-0, <1.2.0-0"
+
+[dependencies.serde]
+workspace = true
+features = [
+    "derive",
+]
+
+[dependencies.serde_json]
+workspace = true
+
+[dependencies.greentic-interfaces-guest]
+version = ">=1.1.0-0, <1.2.0-0"
+default-features = false
+features = [
+    "component-v0-6",
+]
 
 [build-dependencies]
-greentic-types = "0.4"
-serde_json.workspace = true
+greentic-types = ">=1.1.0-0, <1.2.0-0"
 
-[dev-dependencies]
-tempfile.workspace = true
-[[example]]
-name = "memory_demo"
+[build-dependencies.serde_json]
+workspace = true
+
+[dev-dependencies.tempfile]
+workspace = true
