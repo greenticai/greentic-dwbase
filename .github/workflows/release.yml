@@ -31,6 +31,7 @@ jobs:
       - name: Install greentic tools
         run: |
           cargo binstall gtc -y
+          cargo binstall greentic-pack -y --locked --force
           gtc install
 
       - name: Build component + pack
@@ -172,7 +173,6 @@ jobs:
 
   publish_crates:
     name: Publish to crates.io
-    needs: [cli-binaries]
     permissions:
       contents: read
     uses: greenticai/.github/.github/workflows/crates-publish.yml@main
