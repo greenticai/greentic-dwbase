@@ -32,7 +32,7 @@ crate-type = [
 ]
 
 [dependencies]
-greentic-types = ">=1.1.0-dev, <1.2.0-0"
+greentic-types = ">=1.1.0-0, <1.2.0-0"
 
 [dependencies.serde]
 workspace = true
@@ -44,14 +44,14 @@ features = [
 workspace = true
 
 [dependencies.greentic-interfaces-guest]
-version = ">=1.1.0-dev, <1.2.0-0"
+version = ">=1.1.0-0, <1.2.0-0"
 default-features = false
 features = [
     "component-v0-6",
 ]
 
 [build-dependencies]
-greentic-types = ">=1.1.0-dev, <1.2.0-0"
+greentic-types = ">=1.1.0-0, <1.2.0-0"
 
 [build-dependencies.serde_json]
 workspace = true
