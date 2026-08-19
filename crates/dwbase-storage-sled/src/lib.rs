@@ -132,6 +132,46 @@ impl From<StorageError> for DwbaseError {
     }
 }
 
+/// How long `open` keeps waiting for a db file lock held by a handle that is
+/// still winding down. Sized for an in-process handoff, not for a second
+/// process: a genuinely concurrent holder still gets the same error, just
+/// after this budget.
+const LOCK_WAIT_BUDGET: std::time::Duration = std::time::Duration::from_secs(5);
+const LOCK_WAIT_POLL: std::time::Duration = std::time::Duration::from_millis(20);
+
+/// Opens the sled db, waiting out a lock that a closing handle has not let go
+/// of yet.
+///
+/// sled holds the db file lock through an `Arc<File>` in its config and only
+/// releases it when the last clone drops. Clones reach epoch-deferred
+/// destructors (`Guard::defer`), so they can outlive `drop(db)` by however
+/// long it takes crossbeam to collect — a close followed by an immediate
+/// reopen of the same path in one process therefore races the handoff and
+/// fails with `WouldBlock`. `dwbase-cli soak` restarts in-process exactly like
+/// that, and the nightly caught it there.
+///
+/// Only lock contention is retried; every other sled error returns straight
+/// away, and contention that outlasts the budget still surfaces the original
+/// error rather than a synthesized one.
+fn open_db_waiting_for_lock(path: &std::path::Path) -> Result<sled::Db> {
+    let deadline = std::time::Instant::now() + LOCK_WAIT_BUDGET;
+    loop {
+        match sled::open(path) {
+            Ok(db) => return Ok(db),
+            Err(err) => {
+                // sled 0.34 reports this as an opaque `Error::Io`; there is no
+                // typed variant to match on, so the message is the only signal.
+                let contended = matches!(&err, sled::Error::Io(io)
+                    if io.to_string().contains("could not acquire lock"));
+                if !contended || std::time::Instant::now() >= deadline {
+                    return Err(StorageError::from(err).into());
+                }
+                std::thread::sleep(LOCK_WAIT_POLL);
+            }
+        }
+    }
+}
+
 impl SledStorage {
     pub fn open(config: SledConfig, key_provider: Arc<dyn KeyProvider>) -> Result<Self> {
         if config.encryption_enabled && config.key_id.is_none() {
@@ -139,7 +179,7 @@ impl SledStorage {
                 "encryption enabled but key_id missing".into(),
             ));
         }
-        let db = sled::open(&config.path).map_err(StorageError::from)?;
+        let db = open_db_waiting_for_lock(&config.path)?;
         let storage = Self {
             db,
             flush_on_write: config.flush_on_write,
@@ -659,6 +699,7 @@ mod tests {
     use super::*;
     use dwbase_core::{AtomKind, Importance, Timestamp, WorkerKey};
     use std::sync::Arc;
+    use std::time::Duration;
     use tempfile::TempDir;
 
     fn sample_atom(id: &str, world: &str, ts: &str, importance: f32) -> Atom {
@@ -824,6 +865,38 @@ mod tests {
             .is_none());
         let atoms = storage.get_by_ids(&[AtomId::new("a1")]).unwrap();
         assert!(atoms.is_empty());
+    }
+
+    #[test]
+    fn open_waits_out_a_transient_lock_holder() {
+        // sled releases the db file lock only when the last `Arc<File>` inside
+        // its config drops, and epoch-deferred destructors can keep clones
+        // alive well past `drop(db)`. Any close-then-reopen of the same path
+        // in one process therefore races the handoff — the CLI soak restart
+        // does exactly that, and the nightly caught it as a `WouldBlock` on
+        // reopen. Hold the lock for a stretch no non-retrying open survives.
+        let tmp = TempDir::new().unwrap();
+        let holder = SledStorage::open(
+            SledConfig::new(tmp.path()),
+            Arc::new(DummyKeyProvider::default()),
+        )
+        .expect("first open");
+
+        let released = std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(300));
+            drop(holder);
+        });
+        // Let the holder settle so the open below genuinely contends.
+        std::thread::sleep(Duration::from_millis(50));
+
+        let reopened = SledStorage::open(
+            SledConfig::new(tmp.path()),
+            Arc::new(DummyKeyProvider::default()),
+        )
+        .expect("open must wait out a transient lock holder");
+
+        released.join().expect("holder thread");
+        drop(reopened);
     }
 
     #[test]
