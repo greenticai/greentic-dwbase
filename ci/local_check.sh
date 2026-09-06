@@ -10,7 +10,7 @@ fi
 
 if [[ "${CARGO_NET_OFFLINE:-}" != "true" ]]; then
   echo "==> install greentic tools (if missing)"
-  command -v cargo-binstall >/dev/null 2>&1 || cargo install cargo-binstall
+  command -v cargo-binstall >/dev/null 2>&1 || curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
   command -v greentic-component >/dev/null 2>&1 || cargo binstall greentic-component -y
   command -v packc >/dev/null 2>&1 || cargo binstall packc -y
   command -v cargo-component >/dev/null 2>&1 || cargo binstall cargo-component -y
