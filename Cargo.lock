@@ -1340,9 +1340,9 @@ dependencies = [
 
 [[package]]
 name = "greentic-interfaces-guest"
-version = "1.2.0-dev.36581663119"
+version = "1.2.0-dev.36693671073"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b33ddf40470f8d186f8f6075a6fc1ccc24e26064fa601780d28c5a1c31331abd"
+checksum = "b615d64ac064c03e26604d5e772f5d9a73684b8e91c290ed98408ac107cdd9b0"
 dependencies = [
  "greentic-types",
  "wit-bindgen 0.57.1",
@@ -1352,9 +1352,9 @@ dependencies = [
 
 [[package]]
 name = "greentic-types"
-version = "1.2.0-dev.36580872045"
+version = "1.2.0-dev.36686688698"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c90242f92d1163271c2a9e3ff6ee5199157bbb504c6b4890c486e5e60529b5f2"
+checksum = "6185057e5d841701eea23c6fca6ae3bdb61cd5106ad625ce3d1c82f5a0188769"
 dependencies = [
  "anyhow",
  "blake3",
