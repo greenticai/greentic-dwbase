@@ -44,7 +44,7 @@ jobs:
           mkdir -p packs/dwbase-gtpack/components
           cp "$COMPONENT_WASM" packs/dwbase-gtpack/components/component_dwbase.wasm
           cp "$COMPONENT_MANIFEST" packs/dwbase-gtpack/components/component.manifest.json
-          packc build --in packs/dwbase-gtpack --gtpack-out packs/dwbase-gtpack/dist/dwbase.gtpack
+          greentic-pack build --in packs/dwbase-gtpack --gtpack-out packs/dwbase-gtpack/dist/dwbase.gtpack
 
       - name: Setup ORAS
         uses: oras-project/setup-oras@v1
